@@ -16,7 +16,7 @@ use serenity::{
 use std::{collections::HashSet, env, sync::Arc};
 use tokio::signal;
 
-use commands::{math::*, util::*};
+use commands::{help::*, math::*, util::*};
 
 pub struct ShardManagerContainer;
 
@@ -65,7 +65,8 @@ async fn main() {
 
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix("!"))
-        .group(&GENERAL_GROUP);
+        .group(&GENERAL_GROUP)
+        .help(&MY_HELP);
 
     let mut client = Client::new(&token)
         .framework(framework)
