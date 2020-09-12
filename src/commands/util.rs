@@ -1,3 +1,6 @@
+#[allow(unused_imports)]
+use crate::ShardManagerContainer;
+use serenity::client::bridge::gateway::ShardId;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
@@ -45,6 +48,43 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
                 RoleId(role).to_role_cached(&ctx.cache).await.unwrap().name,
                 msg.author.name
             ),
+        )
+        .await?;
+
+    Ok(())
+}
+
+#[command]
+pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read().await;
+
+    let shard_manager = match data.get::<ShardManagerContainer>() {
+        Some(v) => v,
+        None => {
+            msg.channel_id
+                .say(&ctx.http, "There was a problem getting the shard manager")
+                .await?;
+
+            return Ok(());
+        }
+    };
+
+    let manager = shard_manager.lock().await;
+    let runners = manager.runners.lock().await;
+
+    let runner = match runners.get(&ShardId(ctx.shard_id)) {
+        Some(runner) => runner,
+        None => {
+            msg.channel_id.say(&ctx.http, "No shard found").await?;
+
+            return Ok(());
+        }
+    };
+
+    msg.channel_id
+        .say(
+            &ctx.http,
+            format!("The shard latency is {:?}", runner.latency.unwrap()),
         )
         .await?;
 

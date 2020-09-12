@@ -17,7 +17,7 @@ use tokio::signal;
 
 use commands::{math::*, util::*};
 
-struct ShardManagerContainer;
+pub struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
@@ -39,7 +39,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(multiply, add_role, remove_role)]
+#[commands(multiply, add_role, remove_role, latency)]
 struct General;
 
 #[tokio::main]
