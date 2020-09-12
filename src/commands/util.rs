@@ -19,7 +19,10 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 #[checks(owner)]
 pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
-    let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
+    let mut member = ctx
+        .http
+        .get_member(msg.guild_id.unwrap().as_u64().clone(), member)
+        .await?;
 
     let role = parse_mention(args.single::<String>().unwrap()).unwrap();
 
@@ -29,7 +32,7 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
         .say(
             &ctx.http,
             format!(
-                "Gave role {} to {}",
+                "Gave role `{}` to `{}`",
                 RoleId(role).to_role_cached(&ctx.cache).await.unwrap().name,
                 msg.author.name
             ),
@@ -44,7 +47,10 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 #[checks(owner)]
 pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
-    let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
+    let mut member = ctx
+        .http
+        .get_member(msg.guild_id.unwrap().as_u64().clone(), member)
+        .await?;
 
     let role = parse_mention(args.single::<String>().unwrap()).unwrap();
 
@@ -54,7 +60,7 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
         .say(
             &ctx.http,
             format!(
-                "Removed role {} from {}",
+                "Removed role `{}` from `{}`",
                 RoleId(role).to_role_cached(&ctx.cache).await.unwrap().name,
                 msg.author.name
             ),
@@ -96,7 +102,10 @@ pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
             msg.channel_id
                 .say(
                     &ctx.http,
-                    format!("The shard latency is {:?}", runner.latency.unwrap()),
+                    format!(
+                        "The shard latency is {}ms",
+                        runner.latency.unwrap().as_millis()
+                    ),
                 )
                 .await?;
         }
