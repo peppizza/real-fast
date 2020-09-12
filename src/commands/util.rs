@@ -16,6 +16,7 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 #[only_in(guilds)]
+#[checks(owner)]
 pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
@@ -40,6 +41,7 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 
 #[command]
 #[only_in(guilds)]
+#[checks(owner)]
 pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
