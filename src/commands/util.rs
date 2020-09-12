@@ -1,4 +1,3 @@
-#[allow(unused_imports)]
 use crate::ShardManagerContainer;
 use serenity::client::bridge::gateway::ShardId;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
