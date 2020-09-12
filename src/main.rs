@@ -1,4 +1,5 @@
 mod commands;
+mod util;
 
 use log::{error, info};
 use serenity::{
@@ -39,7 +40,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(multiply, add_role, remove_role, latency)]
+#[commands(multiply, add_role, remove_role, latency, ping)]
 struct General;
 
 #[tokio::main]

@@ -1,9 +1,18 @@
+use crate::util::checks::*;
 use crate::ShardManagerContainer;
 use serenity::client::bridge::gateway::ShardId;
 use serenity::framework::standard::{macros::command, Args, CommandResult};
 use serenity::model::prelude::*;
 use serenity::prelude::*;
 use serenity::utils::parse_mention;
+
+#[command]
+#[checks(owner)]
+pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
+    msg.channel_id.say(&ctx.http, "Pong!").await?;
+
+    Ok(())
+}
 
 #[command]
 #[only_in(guilds)]
@@ -80,12 +89,21 @@ pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
         }
     };
 
-    msg.channel_id
-        .say(
-            &ctx.http,
-            format!("The shard latency is {:?}", runner.latency.unwrap()),
-        )
-        .await?;
+    match runner.latency {
+        Some(_) => {
+            msg.channel_id
+                .say(
+                    &ctx.http,
+                    format!("The shard latency is {:?}", runner.latency.unwrap()),
+                )
+                .await?;
+        }
+        None => {
+            msg.channel_id
+                .say(&ctx.http, "Latency is not available yet")
+                .await?;
+        }
+    };
 
     Ok(())
 }
