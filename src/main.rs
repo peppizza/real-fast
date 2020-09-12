@@ -29,9 +29,15 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn ready(&self, ctx: Context, ready: Ready) {
-        info!("Connected as {}", ready.user.name);
+        info!(
+            "Connected as {}#{} ({})",
+            ready.user.name, ready.user.discriminator, ready.user.id
+        );
 
-        ctx.set_activity(Activity::playing("name")).await;
+        ctx.set_activity(Activity::playing(
+            format!("with {} guilds", ready.guilds.len()).as_str(),
+        ))
+        .await;
     }
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
