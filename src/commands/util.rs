@@ -34,7 +34,7 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
             format!(
                 "Gave role `{}` to `{}`",
                 RoleId(role).to_role_cached(&ctx.cache).await.unwrap().name,
-                msg.author.name
+                member.display_name()
             ),
         )
         .await?;
@@ -62,7 +62,7 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
             format!(
                 "Removed role `{}` from `{}`",
                 RoleId(role).to_role_cached(&ctx.cache).await.unwrap().name,
-                msg.author.name
+                member.display_name()
             ),
         )
         .await?;
