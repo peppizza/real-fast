@@ -45,7 +45,7 @@ struct General;
 
 #[tokio::main]
 async fn main() {
-    kankyo::load(false).expect("Failed to load .env file");
+    kankyo::init().expect("Failed to load .env file");
 
     env_logger::init();
 
