@@ -1,13 +1,20 @@
 mod checks;
 mod commands;
 
-use log::{error, info};
+use log::{debug, error, info, warn};
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
-    framework::{standard::macros::group, StandardFramework},
+    framework::{
+        standard::{
+            macros::{group, hook},
+            CommandResult, DispatchError, Reason,
+        },
+        StandardFramework,
+    },
     http::Http,
     model::{
+        channel::Message,
         event::ResumedEvent,
         gateway::{Activity, Ready},
     },
@@ -49,6 +56,57 @@ impl EventHandler for Handler {
 #[commands(multiply, add_role, remove_role, latency, ping)]
 struct General;
 
+#[hook]
+async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
+    debug!(
+        "Got command '{}' by user '{}'",
+        command_name, msg.author.name
+    );
+
+    true
+}
+
+#[hook]
+async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_result: CommandResult) {
+    match command_result {
+        Ok(()) => debug!("Processed command '{}'", command_name),
+        Err(why) => warn!("Command '{}' returned error {:?}", command_name, why),
+    }
+}
+
+#[hook]
+async fn unkown_command(_ctx: &Context, _msg: &Message, unkown_command_name: &str) {
+    debug!("Could not find command named '{}'", unkown_command_name);
+}
+
+#[hook]
+async fn dispatch_error(ctx: &Context, msg: &Message, error: DispatchError) {
+    match error {
+        DispatchError::Ratelimited(duration) => {
+            let _ = msg
+                .channel_id
+                .say(
+                    &ctx.http,
+                    format!("Try this again in {} seconds.", duration.as_secs()),
+                )
+                .await;
+        }
+        DispatchError::CheckFailed(check, reason) => {
+            if let Reason::User(reason) = reason {
+                let _ = msg
+                    .channel_id
+                    .say(
+                        &ctx.http,
+                        format!("Check {} failed with error {:?}", check, reason),
+                    )
+                    .await;
+            }
+        }
+
+        why => debug!("Command failed with error: {:?}", why),
+    }
+}
+
 #[tokio::main]
 async fn main() {
     kankyo::init().expect("Failed to load .env file");
@@ -72,6 +130,10 @@ async fn main() {
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix("!"))
         .group(&GENERAL_GROUP)
+        .before(before)
+        .after(after)
+        .unrecognised_command(unkown_command)
+        .on_dispatch_error(dispatch_error)
         .help(&MY_HELP);
 
     let mut client = Client::new(&token)
