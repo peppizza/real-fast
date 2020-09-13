@@ -1,5 +1,5 @@
+mod checks;
 mod commands;
-mod util;
 
 use log::{error, info};
 use serenity::{
