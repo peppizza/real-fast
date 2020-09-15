@@ -1,6 +1,8 @@
-use serenity::framework::standard::{macros::check, Args, CheckResult, CommandOptions};
-use serenity::model::prelude::*;
-use serenity::prelude::*;
+use serenity::{
+    framework::standard::{macros::check, Args, CheckResult, CommandOptions},
+    model::prelude::*,
+    prelude::*,
+};
 
 #[check]
 #[name = "owner"]

@@ -1,10 +1,11 @@
-use crate::checks::*;
-use crate::ShardManagerContainer;
-use serenity::client::bridge::gateway::ShardId;
-use serenity::framework::standard::{macros::command, Args, CommandResult};
-use serenity::model::prelude::*;
-use serenity::prelude::*;
-use serenity::utils::parse_mention;
+use crate::{checks::*, ShardManagerContainer};
+use serenity::{
+    client::bridge::gateway::ShardId,
+    framework::standard::{macros::command, Args, CommandResult},
+    model::prelude::*,
+    prelude::*,
+    utils::parse_mention,
+};
 
 #[command]
 #[checks(owner)]

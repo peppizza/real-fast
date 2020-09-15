@@ -1,9 +1,10 @@
-use serenity::framework::standard::{macros::command, Args, CommandResult};
-use serenity::model::prelude::*;
-use serenity::prelude::*;
-use serenity::utils::read_image;
-use std::fs::File;
-use std::io::copy;
+use serenity::{
+    framework::standard::{macros::command, Args, CommandResult},
+    model::prelude::*,
+    prelude::*,
+    utils::read_image,
+};
+use std::{fs::File, io::copy};
 use tempfile::Builder;
 
 #[command]

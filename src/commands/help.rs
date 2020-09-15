@@ -1,10 +1,12 @@
 use std::collections::HashSet;
 
-use serenity::framework::standard::{
-    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
+use serenity::{
+    framework::standard::{
+        help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
+    },
+    model::prelude::*,
+    prelude::*,
 };
-use serenity::model::prelude::*;
-use serenity::prelude::*;
 
 #[help]
 #[individual_command_tip = "Hello!\n\
