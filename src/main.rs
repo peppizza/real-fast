@@ -57,7 +57,7 @@ impl EventHandler for Handler {
 struct General;
 
 #[group]
-#[commands(new_emoji)]
+#[commands(new_emoji, remove_emoji)]
 struct Emoji;
 
 #[hook]
