@@ -8,6 +8,7 @@ use std::{fs::File, io::copy};
 use tempfile::Builder;
 
 #[command]
+#[required_permissions("MANAGE_EMOJIS")]
 async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = args.single::<String>().unwrap();
     let image = args.single::<String>().unwrap();
@@ -30,9 +31,17 @@ async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResul
 
     copy(&mut resp.bytes().await?.as_ref(), &mut dest.1)?;
 
-    msg.guild_id
+    let emoji = msg
+        .guild_id
         .unwrap()
         .create_emoji(&ctx.http, &name, &read_image(&dest.0).unwrap())
+        .await?;
+
+    msg.channel_id
+        .say(
+            &ctx.http,
+            format!("Created emoji {} with name {}", emoji.mention(), emoji.name),
+        )
         .await?;
 
     Ok(())
