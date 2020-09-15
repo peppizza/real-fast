@@ -70,3 +70,31 @@ pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> Comma
 
     Ok(())
 }
+
+#[command]
+#[required_permissions("MANAGE_EMOJIS")]
+pub async fn rename_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let name = args.single::<String>().unwrap();
+    let new_name = args.single::<String>().unwrap();
+    let emoji = match parse_emoji(name) {
+        Some(e) => e,
+        None => {
+            msg.channel_id
+                .say(&ctx.http, "That emoji was not found")
+                .await?;
+            return Ok(());
+        }
+    };
+
+    let emoji = msg
+        .guild_id
+        .unwrap()
+        .edit_emoji(&ctx.http, emoji.id, &new_name)
+        .await?;
+
+    msg.channel_id
+        .say(&ctx.http, format!("Renamed emoji to {}", emoji.mention()))
+        .await?;
+
+    Ok(())
+}
