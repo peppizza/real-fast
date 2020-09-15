@@ -6,7 +6,12 @@ use serenity::{
 
 #[check]
 #[name = "owner"]
-async fn owner_check(_: &Context, msg: &Message, _: &mut Args, _: &CommandOptions) -> CheckResult {
+pub async fn owner_check(
+    _: &Context,
+    msg: &Message,
+    _: &mut Args,
+    _: &CommandOptions,
+) -> CheckResult {
     if msg.author.id != 253290704384557057 {
         return CheckResult::new_user("You lack admin permissions");
     }

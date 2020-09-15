@@ -9,7 +9,7 @@ use tempfile::Builder;
 
 #[command]
 #[required_permissions("MANAGE_EMOJIS")]
-async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = args.single::<String>().unwrap();
     let image = args.single::<String>().unwrap();
 
