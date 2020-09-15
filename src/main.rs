@@ -23,7 +23,7 @@ use serenity::{
 use std::{collections::HashSet, env, sync::Arc};
 use tokio::signal;
 
-use commands::{help::*, math::*, util::*};
+use commands::{emoji::*, help::*, math::*, util::*};
 
 pub struct ShardManagerContainer;
 
@@ -56,6 +56,10 @@ impl EventHandler for Handler {
 #[commands(multiply, add_role, remove_role, latency, ping)]
 struct General;
 
+#[group]
+#[commands(new_emoji)]
+struct Emoji;
+
 #[hook]
 async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
     debug!(
@@ -70,7 +74,7 @@ async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
 async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_result: CommandResult) {
     match command_result {
         Ok(()) => debug!("Processed command '{}'", command_name),
-        Err(why) => warn!("Command '{}' returned error {:?}", command_name, why),
+        Err(why) => warn!("Command '{}' returned error {}", command_name, why),
     }
 }
 
@@ -130,6 +134,7 @@ async fn main() {
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix("!"))
         .group(&GENERAL_GROUP)
+        .group(&EMOJI_GROUP)
         .before(before)
         .after(after)
         .unrecognised_command(unkown_command)
