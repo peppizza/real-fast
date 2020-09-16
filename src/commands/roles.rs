@@ -60,27 +60,27 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = match args.single::<String>() {
-        Ok(name) => name,
-        Err(_) => {
+    let name = {
+        if args.len() >= 1 {
+            args.single::<String>().unwrap()
+        } else {
             msg.channel_id
                 .say(&ctx.http, "Enter the name of the new role")
                 .await?;
-            let name = match msg
+            match msg
                 .author
                 .await_reply(&ctx)
                 .timeout(Duration::from_secs(10))
                 .await
             {
-                Some(name) => name,
+                Some(name) => name.content.clone(),
                 None => {
                     msg.channel_id
                         .say(&ctx.http, "No answer within 10 seconds")
                         .await?;
                     return Ok(());
                 }
-            };
-            name.content.clone()
+            }
         }
     };
 
@@ -101,27 +101,27 @@ pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn delete_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = match args.single::<String>() {
-        Ok(name) => name,
-        Err(_) => {
+    let name = {
+        if args.len() >= 1 {
+            args.single::<String>().unwrap()
+        } else {
             msg.channel_id
                 .say(&ctx.http, "Mention the role to delete")
                 .await?;
-            let name = match msg
+            match msg
                 .author
                 .await_reply(&ctx)
                 .timeout(Duration::from_secs(10))
                 .await
             {
-                Some(name) => name,
+                Some(name) => name.content.clone(),
                 None => {
                     msg.channel_id
                         .say(&ctx.http, "No answer within 10 seconds")
                         .await?;
                     return Ok(());
                 }
-            };
-            name.content.clone()
+            }
         }
     };
 
