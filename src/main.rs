@@ -132,7 +132,7 @@ async fn main() {
     };
 
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).prefix("!"))
+        .configure(|c| c.owners(owners).prefix("~"))
         .group(&GENERAL_GROUP)
         .group(&EMOJI_GROUP)
         .before(before)
