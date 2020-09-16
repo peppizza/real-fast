@@ -22,7 +22,7 @@ use serenity::{
 use std::{collections::HashSet, env, sync::Arc};
 use tokio::signal;
 
-use commands::{emoji::*, help::*, math::*, util::*};
+use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
 pub struct ShardManagerContainer;
 
