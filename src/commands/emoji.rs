@@ -8,6 +8,7 @@ use std::{fs::File, io::copy};
 use tempfile::Builder;
 
 #[command]
+#[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = args.single::<String>().unwrap();
@@ -48,6 +49,7 @@ pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandR
 }
 
 #[command]
+#[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = args.single::<String>().unwrap();
@@ -72,6 +74,7 @@ pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> Comma
 }
 
 #[command]
+#[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn rename_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = args.single::<String>().unwrap();
