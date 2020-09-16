@@ -52,12 +52,16 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(multiply, add_role, remove_role, latency, ping)]
+#[commands(multiply, latency, ping)]
 struct General;
 
 #[group]
 #[commands(new_emoji, remove_emoji, rename_emoji)]
 struct Emoji;
+
+#[group]
+#[commands(add_role, remove_role)]
+struct Role;
 
 #[hook]
 async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
@@ -134,6 +138,7 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix("~"))
         .group(&GENERAL_GROUP)
         .group(&EMOJI_GROUP)
+        .group(&ROLE_GROUP)
         .before(before)
         .after(after)
         .unrecognised_command(unkown_command)
