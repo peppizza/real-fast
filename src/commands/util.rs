@@ -1,4 +1,4 @@
-use crate::{checks::*, ShardManagerContainer};
+use crate::ShardManagerContainer;
 use serenity::{
     client::bridge::gateway::ShardId,
     framework::standard::{macros::command, Args, CommandResult},
@@ -8,7 +8,7 @@ use serenity::{
 };
 
 #[command]
-#[checks(owner)]
+#[owners_only]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     msg.channel_id.say(&ctx.http, "Pong!").await?;
 
@@ -17,7 +17,7 @@ pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 #[only_in(guilds)]
-#[checks(owner)]
+#[owners_only]
 pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
@@ -42,7 +42,7 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 
 #[command]
 #[only_in(guilds)]
-#[checks(owner)]
+#[owners_only]
 pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let member = parse_mention(args.single::<String>().unwrap()).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;

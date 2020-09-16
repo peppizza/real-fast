@@ -1,4 +1,3 @@
-mod checks;
 mod commands;
 
 use log::{debug, error, info, warn};
