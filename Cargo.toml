@@ -28,4 +28,5 @@ features = [
     "model",
     "utils",
     "absolute_ratelimits",
+    "collector",
 ]

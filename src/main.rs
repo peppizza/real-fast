@@ -60,7 +60,7 @@ struct General;
 struct Emoji;
 
 #[group]
-#[commands(add_role, remove_role)]
+#[commands(add_role, remove_role, create_role, delete_role)]
 struct Role;
 
 #[hook]
