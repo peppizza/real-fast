@@ -1,10 +1,11 @@
-use crate::ShardManagerContainer;
+use crate::{CommandCounter, ShardManagerContainer};
 use serenity::{
     client::bridge::gateway::ShardId,
     framework::standard::{macros::command, CommandResult},
     model::prelude::*,
     prelude::*,
 };
+use std::fmt::Write;
 
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
@@ -59,5 +60,23 @@ pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
         }
     };
 
+    Ok(())
+}
+
+#[command]
+#[bucket = "complicated"]
+pub async fn commands(ctx: &Context, msg: &Message) -> CommandResult {
+    let mut contents = "Commands used:\n".to_string();
+
+    let data = ctx.data.read().await;
+    let counter = data
+        .get::<CommandCounter>()
+        .expect("Expected CommandCounter in TypeMap.");
+
+    for (k, v) in counter {
+        write!(contents, "- {name}: {amount}\n", name = k, amount = v)?;
+    }
+
+    msg.channel_id.say(&ctx.http, &contents).await?;
     Ok(())
 }

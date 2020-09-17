@@ -19,7 +19,11 @@ use serenity::{
     },
     prelude::*,
 };
-use std::{collections::HashSet, env, sync::Arc};
+use std::{
+    collections::{HashMap, HashSet},
+    env,
+    sync::Arc,
+};
 use tokio::signal;
 
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
@@ -28,6 +32,12 @@ pub struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
+}
+
+pub struct CommandCounter;
+
+impl TypeMapKey for CommandCounter {
+    type Value = HashMap<String, u64>;
 }
 
 struct Handler;
@@ -52,7 +62,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(multiply, latency, ping)]
+#[commands(multiply, latency, ping, commands)]
 struct General;
 
 #[group]
@@ -64,11 +74,18 @@ struct Emoji;
 struct Role;
 
 #[hook]
-async fn before(_ctx: &Context, msg: &Message, command_name: &str) -> bool {
+async fn before(ctx: &Context, msg: &Message, command_name: &str) -> bool {
     debug!(
         "Got command '{}' by user '{}'",
         command_name, msg.author.name
     );
+
+    let mut data = ctx.data.write().await;
+    let counter = data
+        .get_mut::<CommandCounter>()
+        .expect("Expected CommandCounter in TypeMap.");
+    let entry = counter.entry(command_name.to_string()).or_insert(0);
+    *entry += 1;
 
     true
 }
@@ -153,6 +170,7 @@ async fn main() {
 
     {
         let mut data = client.data.write().await;
+        data.insert::<CommandCounter>(HashMap::default());
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
     }
 
