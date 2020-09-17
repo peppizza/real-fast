@@ -1,0 +1,7 @@
+[tasks.build]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.build-arm]
+command = "cargo"
+args = ["build", "--target=armv7-unknown-linux-gnueabihf", "--release"]
