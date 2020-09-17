@@ -5,3 +5,7 @@ args = ["build", "--release"]
 [tasks.build-arm]
 command = "cargo"
 args = ["build", "--target=armv7-unknown-linux-gnueabihf", "--release"]
+
+[tasks.build-windows]
+command = "cargo"
+args = ["build", "--target=x86_64-pc-windows-gnu", "--release"]
