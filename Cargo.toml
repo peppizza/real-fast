@@ -1,5 +1,5 @@
 [package]
-name = "discord"
+name = "real-fast"
 version = "0.3.1"
 authors = ["Spencer <spencervess@gmail.com>"]
 edition = "2018"
