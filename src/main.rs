@@ -3,7 +3,7 @@ mod commands;
 use log::{debug, error, info, warn};
 use serenity::{
     async_trait,
-    client::bridge::gateway::ShardManager,
+    client::{bridge::gateway::ShardManager, validate_token},
     framework::{
         standard::{
             macros::{group, hook},
@@ -138,6 +138,8 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token to be in the environment");
+
+    validate_token(&token).expect("The token is incorrect");
 
     let http = Http::new_with_token(&token);
 
