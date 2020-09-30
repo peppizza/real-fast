@@ -96,7 +96,7 @@ pub async fn rename_emoji(ctx: &Context, msg: &Message, mut args: Args) -> Comma
         .await?;
 
     msg.channel_id
-        .say(&ctx.http, format!("Renamed emoji to {}", emoji.mention()))
+        .say(&ctx.http, format!("Renamed emoji to {}", emoji.name))
         .await?;
 
     Ok(())
