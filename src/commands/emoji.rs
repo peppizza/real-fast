@@ -11,8 +11,8 @@ use tempfile::Builder;
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>().unwrap();
-    let image = args.single::<String>().unwrap();
+    let name = args.single::<String>()?;
+    let image = args.single::<String>()?;
 
     let tmp_dir = Builder::new().tempdir()?;
     let resp = reqwest::get(&image).await?;
@@ -35,7 +35,7 @@ pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandR
     let emoji = msg
         .guild_id
         .unwrap()
-        .create_emoji(&ctx.http, &name, &read_image(&dest.0).unwrap())
+        .create_emoji(&ctx.http, &name, &read_image(&dest.0)?)
         .await?;
 
     msg.channel_id
@@ -52,7 +52,7 @@ pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandR
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>().unwrap();
+    let name = args.single::<String>()?;
     let emoji = match parse_emoji(name) {
         Some(e) => e,
         None => {
@@ -77,8 +77,8 @@ pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> Comma
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn rename_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>().unwrap();
-    let new_name = args.single::<String>().unwrap();
+    let name = args.single::<String>()?;
+    let new_name = args.single::<String>()?;
     let emoji = match parse_emoji(name) {
         Some(e) => e,
         None => {

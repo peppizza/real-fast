@@ -10,10 +10,10 @@ use tokio::time::Duration;
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let member = parse_mention(args.single::<String>().unwrap()).unwrap();
+    let member = parse_mention(args.single::<String>()?).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
 
-    let role = parse_mention(args.single::<String>().unwrap()).unwrap();
+    let role = parse_mention(args.single::<String>()?).unwrap();
 
     member.add_role(&ctx.http, RoleId(role)).await?;
 
@@ -35,10 +35,10 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let member = parse_mention(args.single::<String>().unwrap()).unwrap();
+    let member = parse_mention(args.single::<String>()?).unwrap();
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
 
-    let role = parse_mention(args.single::<String>().unwrap()).unwrap();
+    let role = parse_mention(args.single::<String>()?).unwrap();
 
     member.remove_role(&ctx.http, RoleId(role)).await?;
 
@@ -62,7 +62,7 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = {
         if args.len() >= 1 {
-            args.single::<String>().unwrap()
+            args.single::<String>()?
         } else {
             msg.channel_id
                 .say(&ctx.http, "Enter the name of the new role")
@@ -103,7 +103,7 @@ pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 pub async fn delete_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = {
         if args.len() >= 1 {
-            args.single::<String>().unwrap()
+            args.single::<String>()?
         } else {
             msg.channel_id
                 .say(&ctx.http, "Mention the role to delete")
