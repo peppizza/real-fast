@@ -1,3 +1,8 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
 [tasks.build]
 command = "cargo"
 args = ["build", "--release"]
@@ -9,3 +14,6 @@ args = ["build", "--target=armv7-unknown-linux-gnueabihf", "--release"]
 [tasks.build-windows]
 command = "cargo"
 args = ["build", "--target=x86_64-pc-windows-gnu", "--release"]
+
+[tasks.all]
+dependencies = ["format", "build", "build-arm", "build-windows"]
