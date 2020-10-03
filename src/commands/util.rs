@@ -42,14 +42,11 @@ pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
     };
 
     match runner.latency {
-        Some(_) => {
+        Some(duration) => {
             msg.channel_id
                 .say(
                     &ctx.http,
-                    format!(
-                        "The shard latency is {}ms",
-                        runner.latency.unwrap().as_millis()
-                    ),
+                    format!("The shard latency is {}ms", duration.as_millis()),
                 )
                 .await?;
         }
