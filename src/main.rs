@@ -155,6 +155,8 @@ async fn main() {
 
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix("~"))
+        .bucket("complicated", |b| b.delay(5).time_span(30).limit(2))
+        .await
         .group(&GENERAL_GROUP)
         .group(&EMOJI_GROUP)
         .group(&ROLE_GROUP)
