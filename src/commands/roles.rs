@@ -10,10 +10,10 @@ use tokio::time::Duration;
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let member = parse_mention(args.single::<String>()?).unwrap();
+    let member = parse_mention(args.single::<String>()?).ok_or(UserIdParseError::InvalidFormat)?;
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
 
-    let role = parse_mention(args.single::<String>()?).unwrap();
+    let role = parse_mention(args.single::<String>()?).ok_or(RoleIdParseError::InvalidFormat)?;
 
     member.add_role(&ctx.http, RoleId(role)).await?;
 
@@ -35,10 +35,10 @@ pub async fn add_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandRe
 #[only_in(guilds)]
 #[required_permissions("MANAGE_ROLES")]
 pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let member = parse_mention(args.single::<String>()?).unwrap();
+    let member = parse_mention(args.single::<String>()?).ok_or(UserIdParseError::InvalidFormat)?;
     let mut member = ctx.http.get_member(msg.guild_id.unwrap().0, member).await?;
 
-    let role = parse_mention(args.single::<String>()?).unwrap();
+    let role = parse_mention(args.single::<String>()?).ok_or(RoleIdParseError::InvalidFormat)?;
 
     member.remove_role(&ctx.http, RoleId(role)).await?;
 
