@@ -1,6 +1,5 @@
 mod commands;
 
-use log::{debug, error, info, warn};
 use serenity::{
     async_trait,
     client::{bridge::gateway::ShardManager, validate_token},
@@ -25,6 +24,8 @@ use std::{
     sync::Arc,
 };
 use tokio::signal;
+use tracing::{debug, error, info, warn};
+use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
@@ -133,9 +134,13 @@ async fn dispatch_error(ctx: &Context, msg: &Message, error: DispatchError) {
 
 #[tokio::main]
 async fn main() {
-    kankyo::init().expect("Failed to load .env file");
+    dotenv::dotenv().expect("Failed to load .env file");
 
-    env_logger::init();
+    let subscriber = FmtSubscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env())
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).expect("Failed to start the logger");
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token to be in the environment");
 
