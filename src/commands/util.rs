@@ -71,7 +71,7 @@ pub async fn commands(ctx: &Context, msg: &Message) -> CommandResult {
         .expect("Expected CommandCounter in TypeMap.");
 
     for (k, v) in counter {
-        write!(contents, "- {name}: {amount}\n", name = k, amount = v)?;
+        writeln!(contents, "- {name}: {amount}", name = k, amount = v)?;
     }
 
     msg.channel_id.say(&ctx.http, &contents).await?;

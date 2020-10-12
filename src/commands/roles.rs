@@ -61,7 +61,7 @@ pub async fn remove_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 #[required_permissions("MANAGE_ROLES")]
 pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = {
-        if args.len() >= 1 {
+        if !args.is_empty() {
             args.single::<String>()?
         } else {
             msg.channel_id
@@ -102,7 +102,7 @@ pub async fn create_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
 #[required_permissions("MANAGE_ROLES")]
 pub async fn delete_role(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let name = {
-        if args.len() >= 1 {
+        if !args.is_empty() {
             args.single::<String>()?
         } else {
             msg.channel_id
@@ -136,9 +136,7 @@ pub async fn delete_role(ctx: &Context, msg: &Message, mut args: Args) -> Comman
     };
 
     msg.guild_id.unwrap().delete_role(&ctx.http, role).await?;
-    msg.channel_id
-        .say(&ctx.http, format!("Deleted role"))
-        .await?;
+    msg.channel_id.say(&ctx.http, "Deleted role").await?;
 
     Ok(())
 }
