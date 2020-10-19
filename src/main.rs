@@ -133,18 +133,18 @@ async fn dispatch_error(ctx: &Context, msg: &Message, error: DispatchError) {
 }
 
 #[tokio::main]
-async fn main() {
-    dotenv::dotenv().expect("Failed to load .env file");
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    dotenv::dotenv()?;
 
     let subscriber = FmtSubscriber::builder()
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
 
-    tracing::subscriber::set_global_default(subscriber).expect("Failed to start the logger");
+    tracing::subscriber::set_global_default(subscriber)?;
 
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token to be in the environment");
+    let token = env::var("DISCORD_TOKEN")?;
 
-    validate_token(&token).expect("The token is incorrect");
+    validate_token(&token)?;
 
     let http = Http::new_with_token(&token);
 
@@ -174,8 +174,7 @@ async fn main() {
     let mut client = Client::new(&token)
         .framework(framework)
         .event_handler(Handler)
-        .await
-        .expect("Err creating client");
+        .await?;
 
     {
         let mut data = client.data.write().await;
@@ -186,11 +185,15 @@ async fn main() {
     let shard_manager = client.shard_manager.clone();
 
     tokio::spawn(async move {
-        signal::ctrl_c().await.expect("Error");
+        signal::ctrl_c()
+            .await
+            .expect("Could not register ctrl+c handler");
         shard_manager.lock().await.shutdown_all().await;
     });
 
     if let Err(why) = client.start_autosharded().await {
         error!("Client error: {:?}", why);
     }
+
+    Ok(())
 }
