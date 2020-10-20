@@ -23,7 +23,7 @@ use std::{
     env,
     sync::Arc,
 };
-use tokio::signal;
+use tokio::{signal, sync::RwLock};
 use tracing::{debug, error, info, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
@@ -38,7 +38,7 @@ impl TypeMapKey for ShardManagerContainer {
 pub struct CommandCounter;
 
 impl TypeMapKey for CommandCounter {
-    type Value = HashMap<String, u64>;
+    type Value = Arc<RwLock<HashMap<String, u64>>>;
 }
 
 struct Handler;
@@ -81,12 +81,21 @@ async fn before(ctx: &Context, msg: &Message, command_name: &str) -> bool {
         command_name, msg.author.name
     );
 
-    let mut data = ctx.data.write().await;
-    let counter = data
-        .get_mut::<CommandCounter>()
-        .expect("Expected CommandCounter in TypeMap.");
-    let entry = counter.entry(command_name.to_string()).or_insert(0);
-    *entry += 1;
+    let counter_lock = {
+        let data_read = ctx.data.read().await;
+
+        data_read
+            .get::<CommandCounter>()
+            .expect("Expected CommandCounter in TypeMap.")
+            .clone()
+    };
+
+    {
+        let mut counter = counter_lock.write().await;
+
+        let entry = counter.entry(command_name.to_string()).or_insert(0);
+        *entry += 1;
+    }
 
     true
 }
@@ -178,7 +187,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     {
         let mut data = client.data.write().await;
-        data.insert::<CommandCounter>(HashMap::default());
+        data.insert::<CommandCounter>(Arc::new(RwLock::new(HashMap::default())));
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
     }
 

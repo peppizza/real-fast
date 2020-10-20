@@ -70,7 +70,7 @@ pub async fn commands(ctx: &Context, msg: &Message) -> CommandResult {
         .get::<CommandCounter>()
         .expect("Expected CommandCounter in TypeMap.");
 
-    for (k, v) in counter {
+    for (k, v) in counter.read().await.iter() {
         writeln!(contents, "- {name}: {amount}", name = k, amount = v)?;
     }
 
