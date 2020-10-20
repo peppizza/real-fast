@@ -1,11 +1,10 @@
 use crate::{CommandCounter, ShardManagerContainer};
 use serenity::{
     client::bridge::gateway::ShardId,
-    framework::standard::{macros::command, CommandResult},
+    framework::standard::{macros::command, Args, CommandResult},
     model::prelude::*,
     prelude::*,
 };
-use std::fmt::Write;
 
 #[command]
 pub async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
@@ -61,19 +60,45 @@ pub async fn latency(ctx: &Context, msg: &Message) -> CommandResult {
 }
 
 #[command]
-#[bucket = "complicated"]
-pub async fn commands(ctx: &Context, msg: &Message) -> CommandResult {
-    let mut contents = "Commands used:\n".to_string();
+pub async fn commands(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let command_name = match args.single_quoted::<String>() {
+        Ok(x) => x,
+        Err(_) => {
+            msg.reply(ctx, "I require an argument to run this command.")
+                .await?;
+            return Ok(());
+        }
+    };
 
-    let data = ctx.data.read().await;
-    let counter = data
-        .get::<CommandCounter>()
-        .expect("Expected CommandCounter in TypeMap.");
+    let amount = {
+        let data_read = ctx.data.read().await;
 
-    for (k, v) in counter.read().await.iter() {
-        writeln!(contents, "- {name}: {amount}", name = k, amount = v)?;
+        let command_counter_lock = data_read
+            .get::<CommandCounter>()
+            .expect("Expected CommandCounter in TypeMap.")
+            .clone();
+
+        let command_counter = command_counter_lock.read().await;
+
+        command_counter.get(&command_name).map_or(0, |x| *x)
+    };
+
+    if amount == 0 {
+        msg.reply(
+            ctx,
+            format!("The command `{}` has not yet been used.", command_name),
+        )
+        .await?;
+    } else {
+        msg.reply(
+            ctx,
+            format!(
+                "The command `{}` has been used {} time/s this session!",
+                command_name, amount
+            ),
+        )
+        .await?;
     }
 
-    msg.channel_id.say(&ctx.http, &contents).await?;
     Ok(())
 }
