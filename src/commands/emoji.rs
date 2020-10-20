@@ -11,8 +11,8 @@ use tempfile::Builder;
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>()?;
-    let image = args.single::<String>()?;
+    let name = args.single_quoted::<String>()?;
+    let image = args.single_quoted::<String>()?;
 
     let tmp_dir = Builder::new().tempdir()?;
     let resp = reqwest::get(&image).await?;
@@ -52,7 +52,7 @@ pub async fn new_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandR
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>()?;
+    let name = args.single_quoted::<String>()?;
     let emoji = match parse_emoji(name) {
         Some(e) => e,
         None => {
@@ -77,8 +77,8 @@ pub async fn remove_emoji(ctx: &Context, msg: &Message, mut args: Args) -> Comma
 #[only_in(guilds)]
 #[required_permissions("MANAGE_EMOJIS")]
 pub async fn rename_emoji(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
-    let name = args.single::<String>()?;
-    let new_name = args.single::<String>()?;
+    let name = args.single_quoted::<String>()?;
+    let new_name = args.single_quoted::<String>()?;
     let emoji = match parse_emoji(name) {
         Some(e) => e,
         None => {
