@@ -174,7 +174,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         .group(&ROLE_GROUP)
         .before(before)
         .after(after)
-        .unrecognised_command(unknown_command)
+        .unrecognized_command(unknown_command)
         .on_dispatch_error(dispatch_error)
         .help(&MY_HELP);
 
