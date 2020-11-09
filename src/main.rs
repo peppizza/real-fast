@@ -29,13 +29,13 @@ use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
-pub struct ShardManagerContainer;
+struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
-pub struct CommandCounter;
+struct CommandCounter;
 
 impl TypeMapKey for CommandCounter {
     type Value = Arc<RwLock<HashMap<String, u64>>>;
