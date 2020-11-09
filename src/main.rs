@@ -109,7 +109,7 @@ async fn after(_ctx: &Context, _msg: &Message, command_name: &str, command_resul
 }
 
 #[hook]
-async fn unkown_command(_ctx: &Context, _msg: &Message, unkown_command_name: &str) {
+async fn unknown_command(_ctx: &Context, _msg: &Message, unkown_command_name: &str) {
     debug!("Could not find command named '{}'", unkown_command_name);
 }
 
@@ -174,7 +174,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         .group(&ROLE_GROUP)
         .before(before)
         .after(after)
-        .unrecognised_command(unkown_command)
+        .unrecognised_command(unknown_command)
         .on_dispatch_error(dispatch_error)
         .help(&MY_HELP);
 
