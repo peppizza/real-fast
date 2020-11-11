@@ -1,3 +1,4 @@
+pub mod music;
 pub mod emoji;
 pub mod help;
 pub mod math;

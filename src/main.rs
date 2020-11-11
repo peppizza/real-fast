@@ -1,8 +1,8 @@
 mod commands;
+mod state;
 
 use serenity::{
-    async_trait,
-    client::{bridge::gateway::ShardManager, validate_token},
+    client::validate_token,
     framework::{
         standard::{
             macros::{group, hook},
@@ -11,56 +11,25 @@ use serenity::{
         StandardFramework,
     },
     http::Http,
-    model::{
-        channel::Message,
-        event::ResumedEvent,
-        gateway::{Activity, Ready},
-    },
+    model::channel::Message,
     prelude::*,
 };
+
 use std::{
     collections::{HashMap, HashSet},
     env,
     sync::Arc,
 };
+
+use songbird::SerenityInit;
+
 use tokio::{signal, sync::RwLock};
-use tracing::{debug, error, info, warn};
+use tracing::{debug, error, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
-struct ShardManagerContainer;
-
-impl TypeMapKey for ShardManagerContainer {
-    type Value = Arc<Mutex<ShardManager>>;
-}
-
-struct CommandCounter;
-
-impl TypeMapKey for CommandCounter {
-    type Value = Arc<RwLock<HashMap<String, u64>>>;
-}
-
-struct Handler;
-
-#[async_trait]
-impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, ready: Ready) {
-        info!(
-            "Connected as {}#{} ({})",
-            ready.user.name, ready.user.discriminator, ready.user.id
-        );
-
-        ctx.set_activity(Activity::playing(
-            format!("with {} guilds", ready.guilds.len()).as_str(),
-        ))
-        .await;
-    }
-
-    async fn resume(&self, _: Context, _: ResumedEvent) {
-        info!("Resumed");
-    }
-}
+use state::*;
 
 #[group]
 #[commands(multiply, latency, ping, commands)]
@@ -174,19 +143,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         .group(&ROLE_GROUP)
         .before(before)
         .after(after)
-        .unrecognized_command(unknown_command)
+        .unrecognised_command(unknown_command)
         .on_dispatch_error(dispatch_error)
         .help(&MY_HELP);
 
     let mut client = Client::builder(&token)
         .framework(framework)
         .event_handler(Handler)
+        .register_songbird()
         .await?;
 
     {
         let mut data = client.data.write().await;
         data.insert::<CommandCounter>(Arc::new(RwLock::new(HashMap::default())));
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
+        data.insert::<VoiceQueueManager>(Arc::new(Mutex::new(HashMap::new())));
     }
 
     let shard_manager = client.shard_manager.clone();

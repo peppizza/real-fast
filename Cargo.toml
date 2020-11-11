@@ -15,4 +15,12 @@ tokio = { version = "0.2", features = ["macros", "signal"] }
 reqwest = { version = "0.10", features = ["rustls-tls"], default-features = false }
 base64 = "0.13"
 bytes = "0.5"
-serenity = { version = "0.9", features = ["collector"] }
+
+[dependencies.serenity]
+git = "https://github.com/serenity-rs/serenity"
+rev = "9dfba84a570b27c4bb5cbf93bafcbdb5694cfd80"
+features = ["collector"]
+
+[dependencies.songbird]
+git = "https://github.com/serenity-rs/serenity"
+rev = "9dfba84a570b27c4bb5cbf93bafcbdb5694cfd80"
