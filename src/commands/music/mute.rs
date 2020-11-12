@@ -8,7 +8,7 @@ use super::consts::SONGBIRD_EXPECT;
 
 #[command]
 #[only_in(guilds)]
-async fn deafen(ctx: &Context, msg: &Message) -> CommandResult {
+async fn mute(ctx: &Context, msg: &Message) -> CommandResult {
     let guild_id = msg.guild_id.unwrap();
 
     let manager = songbird::get(ctx).await.expect(SONGBIRD_EXPECT).clone();
@@ -24,11 +24,14 @@ async fn deafen(ctx: &Context, msg: &Message) -> CommandResult {
 
     let mut handler = handler_lock.lock().await;
 
-    if handler.is_deaf() {
-        msg.channel_id.say(&ctx.http, "Already deafened").await?;
+    if handler.is_mute() {
+        msg.channel_id.say(ctx, "Already muted").await?;
     } else {
-        handler.deafen(true).await?;
-        msg.channel_id.say(&ctx.http, "Deafened").await?;
+        if let Err(e) = handler.mute(true).await {
+            msg.channel_id.say(ctx, format!("Failed: {:?}", e)).await?;
+        }
+
+        msg.channel_id.say(ctx, "Now muted").await?;
     }
 
     Ok(())
