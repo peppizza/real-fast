@@ -56,8 +56,8 @@ impl EventHandler for Handler {
 }
 
 pub struct TrackEndNotifier {
-    chan_id: ChannelId,
-    http: Arc<Http>,
+    pub chan_id: ChannelId,
+    pub http: Arc<Http>,
 }
 
 #[async_trait]
@@ -77,15 +77,15 @@ impl VoiceEventHandler for TrackEndNotifier {
     }
 }
 
-struct ChannelDurationNotifier {
-    chan_id: ChannelId,
-    count: Arc<AtomicUsize>,
-    http: Arc<Http>,
+pub struct ChannelDurationNotifier {
+    pub chan_id: ChannelId,
+    pub count: Arc<AtomicUsize>,
+    pub http: Arc<Http>,
 }
 
 #[async_trait]
 impl VoiceEventHandler for ChannelDurationNotifier {
-    async fn act(&self, ctx: &EventContext<'_>) -> Option<Event> {
+    async fn act(&self, _: &EventContext<'_>) -> Option<Event> {
         let count_before = self.count.fetch_add(1, Ordering::Relaxed);
         if let Err(why) = self
             .chan_id
