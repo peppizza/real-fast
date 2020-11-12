@@ -27,6 +27,7 @@ use tokio::{signal, sync::RwLock};
 use tracing::{debug, error, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
+use commands::music::{join::*, leave::*, mute::*, queue::*, skip::*, stop::*, unmute::*};
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
 use state::*;
@@ -42,6 +43,10 @@ struct Emoji;
 #[group]
 #[commands(add_role, remove_role, create_role, delete_role)]
 struct Role;
+
+#[group]
+#[commands(join, leave, mute, queue, skip, stop, unmute)]
+struct Music;
 
 #[hook]
 async fn before(ctx: &Context, msg: &Message, command_name: &str) -> bool {
@@ -141,6 +146,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         .group(&GENERAL_GROUP)
         .group(&EMOJI_GROUP)
         .group(&ROLE_GROUP)
+        .group(&MUSIC_GROUP)
         .before(before)
         .after(after)
         .unrecognised_command(unknown_command)

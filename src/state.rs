@@ -38,14 +38,16 @@ pub struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, ready: Ready) {
+    async fn ready(&self, _: Context, ready: Ready) {
         info!(
             "Connected as {}#{} ({})",
             ready.user.name, ready.user.discriminator, ready.user.id
         );
+    }
 
+    async fn cache_ready(&self, ctx: Context, guilds: Vec<GuildId>) {
         ctx.set_activity(Activity::playing(
-            format!("with {} guilds", ready.guilds.len()).as_str(),
+            format!("with {} guilds", guilds.len()).as_str(),
         ))
         .await;
     }
