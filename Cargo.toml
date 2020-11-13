@@ -18,9 +18,9 @@ bytes = "0.5"
 
 [dependencies.serenity]
 git = "https://github.com/serenity-rs/serenity"
-rev = "2225c8dd1814a6c21d2358a0e7f566ff7a1af198"
+rev = "b3a71db7e70dc8411c498d88e5fd74361b761f49"
 features = ["collector"]
 
 [dependencies.songbird]
 git = "https://github.com/serenity-rs/serenity"
-rev = "2225c8dd1814a6c21d2358a0e7f566ff7a1af198"
+rev = "b3a71db7e70dc8411c498d88e5fd74361b761f49"
