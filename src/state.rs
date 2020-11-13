@@ -1,10 +1,4 @@
-use std::{
-    collections::HashMap,
-    sync::{
-        atomic::{AtomicUsize, Ordering},
-        Arc,
-    },
-};
+use std::{collections::HashMap, sync::Arc};
 
 use serenity::{
     async_trait,

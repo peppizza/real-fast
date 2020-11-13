@@ -7,7 +7,6 @@ use serenity::{
     prelude::*,
 };
 use songbird::{Event as SongbirdEvent, TrackEvent};
-use std::time::Duration;
 
 #[command]
 #[only_in(guilds)]
