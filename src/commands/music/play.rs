@@ -18,7 +18,10 @@ async fn play(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
         Ok(url) => url,
         Err(_) => {
             msg.channel_id
-                .say(ctx, "Mut provide a URL to a video or audio")
+                .say(
+                    ctx,
+                    "Must provide a URL to a video or audio, or the name of a song",
+                )
                 .await?;
 
             return Ok(());
