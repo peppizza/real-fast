@@ -78,28 +78,3 @@ impl VoiceEventHandler for TrackEndNotifier {
         None
     }
 }
-
-pub struct ChannelDurationNotifier {
-    pub chan_id: ChannelId,
-    pub count: Arc<AtomicUsize>,
-    pub http: Arc<Http>,
-}
-
-#[async_trait]
-impl VoiceEventHandler for ChannelDurationNotifier {
-    async fn act(&self, _: &EventContext<'_>) -> Option<Event> {
-        let count_before = self.count.fetch_add(1, Ordering::Relaxed);
-        if let Err(why) = self
-            .chan_id
-            .say(
-                &self.http,
-                &format!("I've been in this channel for {} minutes", count_before + 1),
-            )
-            .await
-        {
-            error!("{}", why);
-        }
-
-        None
-    }
-}

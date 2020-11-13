@@ -1,4 +1,4 @@
-use crate::state::{ChannelDurationNotifier, TrackEndNotifier};
+use crate::state::TrackEndNotifier;
 
 use super::consts::SONGBIRD_EXPECT;
 use serenity::{
@@ -48,17 +48,6 @@ async fn join(ctx: &Context, msg: &Message) -> CommandResult {
             SongbirdEvent::Track(TrackEvent::End),
             TrackEndNotifier {
                 chan_id,
-                http: send_http,
-            },
-        );
-
-        let send_http = ctx.http.clone();
-
-        handle.add_global_event(
-            SongbirdEvent::Periodic(Duration::from_secs(60), None),
-            ChannelDurationNotifier {
-                chan_id,
-                count: Default::default(),
                 http: send_http,
             },
         );
