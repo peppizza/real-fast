@@ -27,7 +27,7 @@ use tokio::{signal, sync::RwLock};
 use tracing::{debug, error, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
-use commands::music::{join::*, leave::*, mute::*, queue::*, skip::*, stop::*, unmute::*};
+use commands::music::{join::*, leave::*, mute::*, play::*, skip::*, stop::*, unmute::*};
 use commands::{emoji::*, help::*, math::*, roles::*, util::*};
 
 use state::*;
@@ -45,7 +45,7 @@ struct Emoji;
 struct Role;
 
 #[group]
-#[commands(join, leave, mute, queue, skip, stop, unmute)]
+#[commands(join, leave, mute, play, skip, stop, unmute)]
 struct Music;
 
 #[hook]
