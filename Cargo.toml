@@ -18,9 +18,10 @@ bytes = "0.5"
 
 [dependencies.serenity]
 git = "https://github.com/serenity-rs/serenity"
-rev = "b3a71db7e70dc8411c498d88e5fd74361b761f49"
+branch = "current"
 features = ["collector"]
 
 [dependencies.songbird]
-git = "https://github.com/serenity-rs/serenity"
-rev = "b3a71db7e70dc8411c498d88e5fd74361b761f49"
+git = "https://github.com/serenity-rs/songbird"
+branch = "current"
+features = ["youtube-dlc"]
