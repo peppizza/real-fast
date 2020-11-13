@@ -13,6 +13,7 @@ use tracing::error;
 
 #[command]
 #[only_in(guilds)]
+#[aliases("p")]
 async fn play(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let url = match args.single_quoted::<String>() {
         Ok(url) => url,
