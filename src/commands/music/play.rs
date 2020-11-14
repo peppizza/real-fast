@@ -1,4 +1,4 @@
-use crate::state::VoiceQueueManager;
+use crate::state::{TrackEndNotifier, VoiceQueueManager};
 
 use super::consts::{SONGBIRD_EXPECT, VOICEQUEUEMANAGER_NOT_FOUND};
 use serenity::{
@@ -67,6 +67,17 @@ async fn play(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
             let (handler_lock, success) = manager.join(guild_id, connect_to).await;
             if success.is_ok() {
+                let mut handle = handler_lock.lock().await;
+
+                let send_http = ctx.http.clone();
+
+                handle.add_global_event(
+                    songbird::Event::Track(songbird::TrackEvent::End),
+                    TrackEndNotifier {
+                        chan_id: msg.channel_id,
+                        http: send_http,
+                    },
+                );
                 msg.channel_id.say(ctx, "Joined channel").await?;
             }
 
