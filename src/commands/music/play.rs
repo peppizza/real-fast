@@ -78,6 +78,7 @@ async fn play(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                         http: send_http,
                     },
                 );
+
                 msg.channel_id.say(ctx, "Joined channel").await?;
             }
 
