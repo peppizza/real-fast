@@ -19,7 +19,7 @@ bytes = "0.5"
 [dependencies.serenity]
 git = "https://github.com/serenity-rs/serenity"
 branch = "current"
-features = ["collector"]
+features = ["collector", "voice"]
 
 [dependencies.songbird]
 git = "https://github.com/serenity-rs/songbird"
