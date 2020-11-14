@@ -28,12 +28,12 @@ use tracing::{debug, error, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use commands::music::{join::*, leave::*, mute::*, play::*, skip::*, stop::*, unmute::*};
-use commands::{emoji::*, help::*, math::*, roles::*, util::*};
+use commands::{emoji::*, help::*, roles::*, util::*};
 
 use state::*;
 
 #[group]
-#[commands(multiply, latency, ping, commands)]
+#[commands(latency, ping, commands)]
 struct General;
 
 #[group]

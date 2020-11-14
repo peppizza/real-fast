@@ -1,6 +1,5 @@
-pub mod music;
 pub mod emoji;
 pub mod help;
-pub mod math;
+pub mod music;
 pub mod roles;
 pub mod util;
