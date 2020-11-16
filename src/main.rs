@@ -21,8 +21,6 @@ use std::{
     sync::Arc,
 };
 
-use songbird::SerenityInit;
-
 use tokio::{signal, sync::RwLock};
 use tracing::{debug, error, warn};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
@@ -150,14 +148,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let mut client = Client::builder(&token)
         .framework(framework)
         .event_handler(Handler)
-        .register_songbird()
         .await?;
 
     {
         let mut data = client.data.write().await;
         data.insert::<CommandCounter>(Arc::new(RwLock::new(HashMap::default())));
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
-        data.insert::<VoiceQueueManager>(Arc::new(Mutex::new(HashMap::new())));
     }
 
     let shard_manager = client.shard_manager.clone();

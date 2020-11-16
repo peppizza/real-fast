@@ -3,12 +3,10 @@ use std::{collections::HashMap, sync::Arc};
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
-    http::Http,
-    model::prelude::{Activity, ChannelId, GuildId, Ready, ResumedEvent},
+    model::prelude::{Activity, GuildId, Ready, ResumedEvent},
     prelude::*,
 };
-use songbird::{tracks::TrackQueue, Event, EventContext, EventHandler as VoiceEventHandler};
-use tracing::{error, info};
+use tracing::info;
 
 pub struct ShardManagerContainer;
 
@@ -20,12 +18,6 @@ pub struct CommandCounter;
 
 impl TypeMapKey for CommandCounter {
     type Value = Arc<RwLock<HashMap<String, u64>>>;
-}
-
-pub struct VoiceQueueManager;
-
-impl TypeMapKey for VoiceQueueManager {
-    type Value = Arc<Mutex<HashMap<GuildId, TrackQueue>>>;
 }
 
 pub struct Handler;
@@ -48,27 +40,5 @@ impl EventHandler for Handler {
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
-    }
-}
-
-pub struct TrackEndNotifier {
-    pub chan_id: ChannelId,
-    pub http: Arc<Http>,
-}
-
-#[async_trait]
-impl VoiceEventHandler for TrackEndNotifier {
-    async fn act(&self, ctx: &EventContext<'_>) -> Option<Event> {
-        if let EventContext::Track(track_list) = ctx {
-            if let Err(why) = self
-                .chan_id
-                .say(&self.http, &format!("Tracks ended: {}.", track_list.len()))
-                .await
-            {
-                error!("{}", why);
-            }
-        }
-
-        None
     }
 }
