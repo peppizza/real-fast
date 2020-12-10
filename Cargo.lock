@@ -128,7 +128,7 @@ dependencies = [
 [[package]]
 name = "command_attr"
 version = "0.3.1"
-source = "git+https://github.com/serenity-rs/serenity?branch=current#b3a71db7e70dc8411c498d88e5fd74361b761f49"
+source = "git+https://github.com/serenity-rs/serenity?branch=current#fb1f0bfdcefada4a08863d5e389df44737a86b12"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1012,8 +1012,8 @@ dependencies = [
 
 [[package]]
 name = "serenity"
-version = "0.9.1"
-source = "git+https://github.com/serenity-rs/serenity?branch=current#b3a71db7e70dc8411c498d88e5fd74361b761f49"
+version = "0.9.2"
+source = "git+https://github.com/serenity-rs/serenity?branch=current#fb1f0bfdcefada4a08863d5e389df44737a86b12"
 dependencies = [
  "async-trait",
  "async-tungstenite",
@@ -1024,6 +1024,7 @@ dependencies = [
  "command_attr",
  "flate2",
  "futures",
+ "percent-encoding",
  "reqwest",
  "serde",
  "serde_json",
