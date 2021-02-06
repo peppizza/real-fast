@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
-    model::prelude::{Activity, GuildId, Ready, ResumedEvent},
+    model::prelude::{Activity, GuildId, Ready, ResumedEvent, VoiceState},
     prelude::*,
 };
 use tracing::info;
@@ -40,5 +40,29 @@ impl EventHandler for Handler {
 
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed");
+    }
+
+    async fn voice_state_update(
+        &self,
+        ctx: Context,
+        guild_id: Option<GuildId>,
+        _: Option<VoiceState>,
+        new: VoiceState,
+    ) {
+        let guild = guild_id
+            .unwrap()
+            .to_guild_cached(ctx.clone())
+            .await
+            .unwrap();
+        let role = guild.role_by_name("Late Night Crew").unwrap();
+        let user = new.user_id.to_user(ctx.clone()).await.unwrap();
+
+        if !user.has_role(ctx.clone(), guild.id, role).await.unwrap()
+            && new.channel_id.unwrap() == 807382613076738048
+        {
+            let _ = guild
+                .edit_member(ctx, user.id, |e| e.disconnect_member())
+                .await;
+        }
     }
 }
